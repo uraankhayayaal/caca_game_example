@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<style>
+	*{
+	    -webkit-user-select: none;
+	    /* user-select -- это нестандартное свойство */
+	    -moz-user-select: none;
+	    /* поэтому нужны префиксы */
+	    -ms-user-select: none;
+	    padding: 0;
+	    margin: 0;
+	}
+	html {
+	  	height: 100%;
+	}
+	body{
+	  	min-height: 100%;
+		overflow: hidden;
+		height: 100%;
+		background-image: url(img/toilet.jpg);
+		background-repeat-y: no-repeat;
+		background-size: auto 150px;
+	}
+	#status{
+		position: absolute;
+	}
+	#gameZone{
+		position: relative;
+		top: 150px;
+		bottom: 0;
+		height: 100%;
+		min-width: 700px;
+		margin: 0 auto;
+		background-color: #bdb225;
+	}
+	.stone{
+		background-image: url(img/kaka.png);
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: contain;
+		-webkit-transition-duration: .5s;
+     	-moz-transition-duration: .5s;
+     	-o-transition-duration: .5s;
+     	transition-duration: .5s;
+	}
+
+	.humo {
+	  position: absolute;
+	  left: 10px;
+	  top: -20px;
+	}
+	.humo ul {
+	  list-style: none;
+	  margin: 0;
+	}
+	.humo ul li {
+	  width: 15px;
+	  height: 15px;
+	  background: rgba(127,94,9,0.3);
+	  border-radius: 50%;
+	  position: absolute;
+	  top: 0;
+	  left: 5px;
+	  -webkit-animation-name: humo;
+	  -moz-animation-name: humo;
+	  -o-animation-name: humo;
+	  -ms-animation-name: humo;
+	  animation-name: humo;
+	  -webkit-animation-duration: 3s;
+	  -moz-animation-duration: 3s;
+	  -o-animation-duration: 3s;
+	  -ms-animation-duration: 3s;
+	  animation-duration: 3s;
+	  -webkit-animation-delay: 0.5s;
+	  -moz-animation-delay: 0.5s;
+	  -o-animation-delay: 0.5s;
+	  -ms-animation-delay: 0.5s;
+	  animation-delay: 0.5s;
+	  -webkit-animation-iteration-count: infinite;
+	  -moz-animation-iteration-count: infinite;
+	  -o-animation-iteration-count: infinite;
+	  -ms-animation-iteration-count: infinite;
+	  animation-iteration-count: infinite;
+	}
+	.humo ul li:nth-child(2) {
+	  width: 15px;
+	  height: 15px;
+	  -webkit-animation-delay: 1.5s;
+	  -moz-animation-delay: 1.5s;
+	  -o-animation-delay: 1.5s;
+	  -ms-animation-delay: 1.5s;
+	  animation-delay: 1.5s;
+	}
+	@-moz-keyframes humo {
+	  0% {
+	    top: 0;
+	  }
+	  100% {
+	    top: -20px;
+	    opacity: 0;
+	    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	    filter: alpha(opacity=0);
+	    left: 150%;
+	    width: 10px;
+	    height: 10px;
+	  }
+	}
+	@-webkit-keyframes humo {
+	  0% {
+	    top: 0;
+	  }
+	  100% {
+	    top: -20px;
+	    opacity: 0;
+	    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	    filter: alpha(opacity=0);
+	    left: 150%;
+	    width: 10px;
+	    height: 10px;
+	  }
+	}
+	@-o-keyframes humo {
+	  0% {
+	    top: 0;
+	  }
+	  100% {
+	    top: -20px;
+	    opacity: 0;
+	    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	    filter: alpha(opacity=0);
+	    left: 150%;
+	    width: 10px;
+	    height: 10px;
+	  }
+	}
+	@keyframes humo {
+	  0% {
+	    top: 0;
+	  }
+	  100% {
+	    top: -20px;
+	    opacity: 0;
+	    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	    filter: alpha(opacity=0);
+	    left: 150%;
+	    width: 10px;
+	    height: 10px;
+	  }
+	}
+	.bullet{
+		background: green;
+	}
+	.striker{
+		background-image: url(img/mukha.png);
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: contain;
+		-webkit-transition-duration: .1s;
+     	-moz-transition-duration: .1s;
+     	-o-transition-duration: .1s;
+     	transition-duration: .1s;
+	}
+	h1{
+		z-index: 2;
+	}
+	#menu{
+		z-index: 1;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0,0,0,.7);
+	}
+	#menu .window{
+		background-color: white;
+		max-width: 300px;
+		max-height: 300px;
+		margin: 0 auto;
+		margin-top: 200px;
+		padding: 20px;
+	}
+	.lastDataWrapper{
+		display: none;
+	}
+</style>
+<div id="status">
+	<p class="lastDataWrapper">Your last score is: <span class="lastScore">0</span></p>
+	<p>Your score:<span id="score">0</span></p>
+	<p>Your time:<span id="time">0</span></p>
+	<p>Your level:<span id="level">1</span></p>
+</div>
+<div id="menu">
+	<div class="window">
+		<p class="lastDataWrapper">Your last score is: <span class="lastScore">0</span></p>
+		<button onclick="start();">Play</button>
+	</div>
+</div>
+<div id="gameZone">
+</div>
+<script>
+var w = window.innerWidth;
+var h = window.innerHeight;
+var score = 0;
+var stone = {
+	class: 'stone',
+	width: 40,
+	height: 40,
+}
+var bullet = {
+	class: 'bullet',
+	width: 6,
+	height: 15,
+}
+var striker = {
+	id: 'striker',
+	class: 'striker',
+	width: 50,
+	height: 50,
+}
+var mouseXPosition;
+var isGame = false;
+var menu = {
+	id: "menu",
+	show: function(){
+		var _menu = document.getElementById(menu.id);
+		_menu.style.display = "block";
+	},
+	hide: function(){
+		var _menu = document.getElementById(menu.id);
+		_menu.style.display = "none";
+	}
+}
+var gameZone = document.getElementById("gameZone");
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+function setRandomPosition(widthOfElement){
+	return getRandomInt(0, w-widthOfElement)
+}
+function setSpeed(model, heightOfElement, pxPerSec){
+	var top = parseInt(model.style.top, 10);
+	topq = model.getBoundingClientRect();
+	if( -heightOfElement <= top && top <= h){
+		model.style.top = (top + pxPerSec) + "px";
+	}else{
+		model.parentNode.removeChild(model);
+	}
+}
+
+function renderStones(x){
+	var smoke = document.createElement("div");
+	smoke.setAttribute('class', "humo");
+	smoke.innerHTML = "<ul><li></li><li></li></ul>";
+	var model = document.createElement("div");
+	model.style.position = "absolute";
+	model.style.width = stone.width + 'px';
+	model.style.height = stone.height + 'px';
+	model.style.left = x+'px';
+	model.style.top = -stone.height+'px';
+	model.setAttribute('class', stone.class);
+	model.appendChild(smoke);
+	gameZone.appendChild(model);
+}
+function renderbullet(x){
+	var model = document.createElement("div");
+	model.style.position = "absolute";
+	model.style.width = bullet.width + 'px';
+	model.style.height = bullet.height + 'px';
+	model.style.left = (mouseXPosition + 21	) + 'px';
+	model.style.top = h - striker.height+'px';
+	model.setAttribute('class', bullet.class);
+	gameZone.appendChild(model);
+}
+function renderStriker(){
+	var model = document.createElement("div");
+	model.style.position = "absolute";
+	model.style.width = striker.width + 'px';
+	model.style.height = striker.height + 'px';
+	model.style.left = (w/2 - striker.height/2) + 'px';
+	model.style.bottom = '150px';
+	model.setAttribute('class', striker.class);
+	model.setAttribute('id', striker.id);
+	gameZone.appendChild(model);
+}
+function strike(x){
+	renderbullet(x);
+}
+function intersects(_bullet, _stone) {
+	bulletPos = _bullet.getBoundingClientRect();
+	stonePos = _stone.getBoundingClientRect();
+  	return (
+  		bulletPos.right 	<= stonePos.right + bulletPos.width 
+  	& 	bulletPos.left 		>= stonePos.left - bulletPos.width
+  	& 	bulletPos.bottom 	<= stonePos.bottom
+  	);
+}
+
+
+
+var onmousedownStrikeInterval = null; 
+var strikerMoveEvent = null; 
+var stonesRenderInterval = null; 
+var bulletsMoveInterval = null; 
+var stonesMoveInterval = null; 
+var gameLogicInterval = null; 
+var levelInterval = null;
+var level = 0;
+var mass = 500;
+function start(){
+	// Striker render
+	renderStriker();
+	// Event listener
+	document.onclick = function(e){
+	    if(isGame) strike(e.pageX)
+	};
+	document.onmousedown = function(e){
+		clearInterval(onmousedownStrikeInterval);
+		if(isGame) onmousedownStrikeInterval = setInterval(function() {strike(e.clientX)},150);
+	};
+	document.onmouseup = function(){
+		clearInterval(onmousedownStrikeInterval);
+	};
+	window.addEventListener('mousemove', function(event){
+		if(isGame) {
+		    mouseXPosition = event.clientX;
+			var striker = document.getElementById("striker");
+		    if ( typeof mouseXPosition !== 'undefined' ){
+		        striker.style.left = mouseXPosition + "px";
+		    }
+		}
+	}, false);
+	// Stone render
+	stonesRenderInterval = setInterval(function() {
+		renderStones(setRandomPosition(stone.width));
+	},mass);
+	// Level incrase
+	levelInterval = setInterval(function() {
+		mass = 500/(1+0.25*level);
+		++level;
+		clearInterval(stonesRenderInterval);
+		stonesRenderInterval = setInterval(function() {
+			renderStones(setRandomPosition(stone.width));
+		},mass);
+		var myLevel = document.getElementById("level");
+		myLevel.innerText = level;
+	},5000);
+	// Bullet move
+	bulletsMoveInterval = setInterval(function() {
+		var bullets = document.getElementsByClassName("bullet");
+		for (var i = 0; i < bullets.length; i++) {
+		    setSpeed(bullets[i], bullet.height, -50);
+		}
+	}, 10);
+	// Stone move
+	stonesMoveInterval = setInterval(function() {
+		var stones = document.getElementsByClassName("stone");
+		for (var i = 0; i < stones.length; i++) {
+		    setSpeed(stones[i], stone.height, 10);
+		}
+	}, 100);
+	// Game logic
+	gameLogicInterval = setInterval(function() {
+		var bullets = document.getElementsByClassName("bullet");
+		var stones = document.getElementsByClassName("stone");
+		for (var i = 0; i < stones.length; i++) {
+	    	stonePos = stones[i].getBoundingClientRect();
+			if(stonePos.bottom >= h-striker.height) {stop(); break;};
+		    for (var j = 0; j < bullets.length; j++) {
+			    if(intersects(bullets[j], stones[i])){
+					stones[i].parentNode.removeChild(stones[i]);
+					var myScore = document.getElementById("score");
+					myScore.innerText = ++score;
+			    }
+			}
+		}
+	}, 10);
+	isGame = true;
+	menu.hide();
+}
+function stop(){
+	isGame = false;
+	clearInterval(levelInterval);
+	clearInterval(onmousedownStrikeInterval); 
+	clearInterval(stonesRenderInterval);
+	var interval_id = window.setInterval("", 9999);
+	for (var i = 1; i < interval_id; i++)
+        window.clearInterval(i); 
+	clearInterval(bulletsMoveInterval); 
+	clearInterval(stonesMoveInterval); 
+	clearInterval(gameLogicInterval);
+	document.getElementById(gameZone.id).innerHTML = "";
+	var lastdatawrappers = document.getElementsByClassName("lastDataWrapper");
+	for (var i = 0; i < lastdatawrappers.length; i++) {
+	    lastdatawrappers[i].style.display = "block";
+	}
+	var lastdatas = document.getElementsByClassName("lastScore");
+	for (var i = 0; i < lastdatas.length; i++) {
+	    lastdatas[i].innerHTML = score;
+	}
+	score = 0;
+	var myScore = document.getElementById("score");
+	myScore.innerText = score;
+	level = 0;
+	var myLevel = document.getElementById("level");
+	myLevel.innerText = level;
+	mass = 500;
+	// Create our event (with options)
+	var evt = new MouseEvent('onmouseup', {
+		bubbles: true,
+		cancelable: true,
+		view: window
+	});
+	// If cancelled, don't dispatch our event
+	var canceled = !gameZone.dispatchEvent(evt);
+
+	menu.show();
+}
+
+</script>
+</body>
+</html>
